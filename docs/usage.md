@@ -23,3 +23,6 @@
 
 ## Create shop
 - create shop and the associated jobs
+
+## Create buildings
+- place family in buildings 
