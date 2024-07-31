@@ -20,3 +20,6 @@
 
 - a retiree 
   - earn € 1500 every month by the state (flue from a black box )
+
+## Create shop
+- create shop and the associated jobs
