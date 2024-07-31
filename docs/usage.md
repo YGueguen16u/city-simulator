@@ -24,5 +24,6 @@
 ## Create shop
 - create shop and the associated jobs
 
-## Create buildings
+## Create buildings and schools
 - place family in buildings 
+- create schools and associated jobs
