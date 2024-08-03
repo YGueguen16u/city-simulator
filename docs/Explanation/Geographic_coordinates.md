@@ -127,3 +127,21 @@ Or simply:
 
 \[ \text{DD} = d + \left( \frac{\text{min}}{60} \right) + \left( \frac{\text{sec}}{3600} \right) \]
 
+
+Calculate for test
+Convertion : https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees
+A : (45°45'07''N 4°49'59''E) --> (45.75194444, 4.83305556)
+B : (45°45'42''N 4°50'02''E) --> (45.76166667, 4.83388889)
+C : (45°45'41''N 4°50'52''E) --> (45.76138889, 4.84777778)
+D : (45°45'09''N 4°50'51''E) --> (45.75250000, 4.84750000)
+
+Distance : https://www.lexilogos.com/calcul_distances.htm
+AB = 1.083 km
+BC = 1.078 km
+CD = 0.989 km
+DA = 1.122 km
+
+
+
+
+

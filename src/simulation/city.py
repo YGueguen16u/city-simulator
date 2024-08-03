@@ -7,6 +7,7 @@ from datetime import timedelta
 from src.simulation.person import Person
 from src.utils.helpers import haversine_distance  # Import the haversine_distance function
 from shapely.geometry import Polygon
+from geopy.distance import geodesic
 
 
 class City:
@@ -54,11 +55,11 @@ class City:
         if n < 3:
             raise ValueError("A polygon must have at least 3 vertices.")
 
-        # Convert coordinates to a flat map using Haversine distances
+        # Convert coordinates to a flat map using Geodesic distances
         distances = []
         for i in range(n):
-            x = haversine_distance(self.coordinates_area[i], (self.coordinates_area[i][0], 0))
-            y = haversine_distance(self.coordinates_area[i], (0, self.coordinates_area[i][1]))
+            x = geodesic(self.coordinates_area[i], (self.coordinates_area[i][0], 0)).meters
+            y = geodesic(self.coordinates_area[i], (0, self.coordinates_area[i][1])).meters
             distances.append((x, y))
 
         # Calculate area using the shoelace formula
@@ -73,8 +74,8 @@ class City:
         x_1, y_1 = distances[0]
         area += x_n * y_1 - y_n * x_1
 
-        self.area = abs(area) / 2 / 1e6  # Convert to square kilometers
-        return self.area
+        self.area = abs(area) / 2  # The area is already in square meters
+        return self.area / 1e6  # Convert to square kilometers
 
     def new_inhabitants(self, n: int):
         """
@@ -125,6 +126,54 @@ class City:
 
 # Example usage
 if __name__ == "__main__":
+
+
+
+    def calculate_area(coords):
+        """
+        Calculate the area of a polygon given its coordinates using the Shoelace formula.
+
+        Args:
+            coords (list of tuples): List of (latitude, longitude) tuples.
+
+        Returns:
+            float: The area of the polygon in square kilometers.
+        """
+        n = len(coords)
+        if n < 3:
+            raise ValueError("A polygon must have at least 3 vertices.")
+
+        distances = []
+        for i in range(n):
+            x = geodesic(coords[i], (coords[i][0], 0)).meters
+            y = geodesic(coords[i], (0, coords[i][1])).meters
+            distances.append((x, y))
+
+        area = 0
+        for i in range(n - 1):
+            x_i, y_i = distances[i]
+            x_ip1, y_ip1 = distances[i + 1]
+            area += x_i * y_ip1 - y_i * x_ip1
+
+        x_n, y_n = distances[-1]
+        x_1, y_1 = distances[0]
+        area += x_n * y_1 - y_n * x_1
+
+        area_km2 = abs(area) / 2 / 1e6  # Convert to square kilometers
+        return area_km2
+
+
+    # Example coordinates in degrees decimal
+    coordinates = [
+        (48.8566, 2.3522),
+        (48.8566, 2.3622),
+        (48.8466, 2.3622),
+        (48.8466, 2.3522)
+    ]
+    area = calculate_area(coordinates)
+    print(f"Area in square kilometers: {area}")
+
+    """
     def generate_coordinates_for_building(n):
         pass
 
@@ -148,7 +197,7 @@ if __name__ == "__main__":
         start_date = start_date.replace(year=next_year, month=next_month, day=1)
 
     print(plougastel.inhabitants_list[:10])
-
+"""
 """
 Note for later:
     - Addition of a list with the coordinates of the city's boundaries'
