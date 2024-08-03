@@ -3,8 +3,9 @@
 import datetime
 import random
 from datetime import timedelta
-
 from src.simulation.person import Person
+from src.utils.helpers import haversine_distance  # Import the haversine_distance function
+from shapely.geometry import Polygon
 
 
 class City:
@@ -14,26 +15,52 @@ class City:
     Attributes:
         id (int): The unique identifier of the city.
         population (int): The population of the city.
-        area (float): The area of the city.
+        coordinates_area (float): The area of the city.
         gdp (float): The gdp of the city.
         inhabitants_list (list): A list of the id of the inhabitants of the city.
+        building_list (list): A list of buildings in the city.
+
     """
 
-    def __init__(self, id, population, area, gdp):
+    def __init__(self, id, population, coordinates_area, gdp):
         """
         Create a new instance of City.
         Args:
             id (int): The unique identifier of the city.
             population (int): The population of the city.
-            area (float): The area of the city.
+            coordinates_area (list): The list of tuples of the coordinates of the city.
             gdp (float): The gdp of the city.
         """
         self.id = id
         self.population = population
-        self.area = area
+        self.coordinates_area = coordinates_area
         self.gdp = gdp
+        self.area = 0
         self.inhabitants_list = []
         self.building_list = []
+
+    def compute_area(self, coordinates_area):
+        """
+        Compute the area of the city based on the given coordinates.
+
+        Args:
+            coordinates_area (list of tuples): A list of tuples where each tuple contains the latitude and longitude in degrees decimal (DD).
+
+        Returns:
+            float: The computed area in square kilometers.
+        """
+        if len(coordinates_area) < 3:
+            raise ValueError("At least three coordinates are required to compute an area.")
+
+        # Convert coordinates to a Polygon and calculate the area
+        polygon = Polygon(coordinates_area)
+        area = polygon.area  # The area is returned in square degrees
+
+        # Convert square degrees to square kilometers
+        # This conversion is approximate as it depends on the location on Earth
+        # 1 degree of latitude is approximately 111 km
+        area_km2 = area * (111 ** 2)
+        return area_km2
 
     def new_inhabitants(self, n: int):
         """
@@ -85,7 +112,7 @@ class City:
 # Example usage
 if __name__ == "__main__":
     def generate_coordinates_for_building(n):
-        for
+        pass
 
     plougastel = City(1, 0, 177, 0)
     plougastel.new_inhabitants(10000)
@@ -111,4 +138,7 @@ if __name__ == "__main__":
 """
 Note for later:
     - Addition of a list with the coordinates of the city's boundaries'
+    - For now, we are handling coordinates in DD (decimal degrees) format, but we will incorporate a possible 
+    switch to DMS (Degrees, Minutes, Seconds) format
+    
 """
