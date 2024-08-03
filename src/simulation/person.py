@@ -18,7 +18,7 @@ class Person:
 
     def __init__(self, id, birth_date, occupation, income):
         """
-        Create a new instance of Person.
+        Create a new instance of person.
         Args:
             id (int): The unique identifier of the person.
             birth_date (date): The birthdate of the person.

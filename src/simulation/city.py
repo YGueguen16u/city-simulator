@@ -1,6 +1,7 @@
 # src/simulation/city.py
 
 import datetime
+import math
 import random
 from datetime import timedelta
 from src.simulation.person import Person
@@ -15,7 +16,7 @@ class City:
     Attributes:
         id (int): The unique identifier of the city.
         population (int): The population of the city.
-        coordinates_area (float): The area of the city.
+        coordinates_area (list of tuples): The area of the city.
         gdp (float): The gdp of the city.
         inhabitants_list (list): A list of the id of the inhabitants of the city.
         building_list (list): A list of buildings in the city.
@@ -28,7 +29,7 @@ class City:
         Args:
             id (int): The unique identifier of the city.
             population (int): The population of the city.
-            coordinates_area (list): The list of tuples of the coordinates of the city.
+            coordinates_area (list of tuples): The list of tuples of the coordinates of the city.
             gdp (float): The gdp of the city.
         """
         self.id = id
@@ -39,7 +40,7 @@ class City:
         self.inhabitants_list = []
         self.building_list = []
 
-    def compute_area(self, coordinates_area):
+    def compute_area(self):
         """
         Compute the area of the city based on the given coordinates.
 
@@ -49,18 +50,31 @@ class City:
         Returns:
             float: The computed area in square kilometers.
         """
-        if len(coordinates_area) < 3:
-            raise ValueError("At least three coordinates are required to compute an area.")
+        n = len(self.coordinates_area)
+        if n < 3:
+            raise ValueError("A polygon must have at least 3 vertices.")
 
-        # Convert coordinates to a Polygon and calculate the area
-        polygon = Polygon(coordinates_area)
-        area = polygon.area  # The area is returned in square degrees
+        # Convert coordinates to a flat map using Haversine distances
+        distances = []
+        for i in range(n):
+            x = haversine_distance(self.coordinates_area[i], (self.coordinates_area[i][0], 0))
+            y = haversine_distance(self.coordinates_area[i], (0, self.coordinates_area[i][1]))
+            distances.append((x, y))
 
-        # Convert square degrees to square kilometers
-        # This conversion is approximate as it depends on the location on Earth
-        # 1 degree of latitude is approximately 111 km
-        area_km2 = area * (111 ** 2)
-        return area_km2
+        # Calculate area using the shoelace formula
+        area = 0
+        for i in range(n - 1):
+            x_i, y_i = distances[i]
+            x_ip1, y_ip1 = distances[i + 1]
+            area += x_i * y_ip1 - y_i * x_ip1
+
+        # Add the last vertex to the first
+        x_n, y_n = distances[-1]
+        x_1, y_1 = distances[0]
+        area += x_n * y_1 - y_n * x_1
+
+        self.area = abs(area) / 2 / 1e6  # Convert to square kilometers
+        return self.area
 
     def new_inhabitants(self, n: int):
         """
@@ -114,6 +128,7 @@ if __name__ == "__main__":
     def generate_coordinates_for_building(n):
         pass
 
+
     plougastel = City(1, 0, 177, 0)
     plougastel.new_inhabitants(10000)
     plougastel.gdp = sum(hab.income * 12 / 4 for hab in plougastel.inhabitants_list)
@@ -133,7 +148,6 @@ if __name__ == "__main__":
         start_date = start_date.replace(year=next_year, month=next_month, day=1)
 
     print(plougastel.inhabitants_list[:10])
-
 
 """
 Note for later:

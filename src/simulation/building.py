@@ -6,7 +6,7 @@ class Building:
 
     Attributes:
         id (int): The unique identifier of the building.
-        coordinates_boundaries (list): A list of tuples containing the coordinates and the elevation
+        coordinates_boundaries (list of tuples): A list of tuples containing the coordinates and the elevation
             of the boundaries of the building. The reference point of the boundary is the coordinates_location tuple
         coordinates_location (tuple): A tuple containing the latitude and longitude of the bottom-left point
             of the building.
@@ -16,7 +16,7 @@ class Building:
         Create a new instance of City.
         Args:
             id (int): The unique identifier of the building.
-            coordinates_boundaries (list): A list of tuples containing the coordinates and the elevation
+            coordinates_boundaries (list of tuples): A list of tuples containing the coordinates and the elevation
                 of the boundaries of the building. The reference point of the boundary is the coordinates_location tuple
             coordinates_location (tuple): A tuple containing the latitude and longitude of the bottom-left point
                 of the building.
