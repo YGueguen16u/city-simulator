@@ -8,24 +8,23 @@ class Person:
 
     Attributes:
         id (int): The unique identifier of the person.
-        birth_date (date): The birth date of the person.
+        birth_date (date): The birthdate of the person.
         occupation (str): The occupation or profession of the person.
         income (float): The annual income of the person.
-        social_class (str): The social class of the person.
+        # social_class (str): The social class of the person.
         children (list): A list of children (instances of Person) associated with this person.
+        savings (int): The savings of the person.
     """
 
     def __init__(self, id, birth_date, occupation, income):
         """
-        Initializes a new instance of the Person class.
-
+        Create a new instance of Person.
         Args:
             id (int): The unique identifier of the person.
             birth_date (date): The birthdate of the person.
             occupation (str): The occupation or profession of the person.
             income (float): The annual income of the person.
             # social_class (str): The social class of the person.
-            children (list): A list of children (instances of Person) associated with this person.
         """
         self.id = id
         self.birth_date = birth_date
