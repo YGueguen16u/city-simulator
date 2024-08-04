@@ -1,13 +1,14 @@
 # src/simulation/city.py
-
 import datetime
 import math
 import random
 from datetime import timedelta
 from src.simulation.person import Person
-from src.utils.helpers import haversine_distance  # Import the haversine_distance function
-from shapely.geometry import Polygon
+# from src.utils.helpers import haversine_distance  # Import the haversine_distance function
+# from shapely.geometry import Polygon
 from geopy.distance import geodesic
+import matplotlib.pyplot as plt
+
 
 
 class City:
@@ -77,6 +78,73 @@ class City:
         self.area = abs(area) / 2  # The area is already in square meters
         return self.area / 1e6  # Convert to square kilometers
 
+    @staticmethod
+    def generate_city_boundary_coordinates(n, center_lat=45.75, center_lon=4.83, radius=0.01, perturbation=0.001):
+        """
+        Generates n coordinates around a center point to form a convex polygon representing the boundary of a city
+        using the Jarvis March algorithm.
+
+        Args:
+            n (int): Number of boundary points to generate.
+            center_lat (float): Latitude of the center point.
+            center_lon (float): Longitude of the center point.
+            radius (float): Maximum distance from the center point for the boundary points.
+            perturbation (float): Maximum perturbation distance to add randomness to points.
+
+        Returns:
+            list: List of tuples representing the coordinates in decimal degrees.
+        """
+        points = []
+
+        for _ in range(n):
+            # Generate random angle and distance
+            angle = random.uniform(0, 2 * math.pi)
+            distance = radius + random.uniform(-perturbation, perturbation)
+
+            # Calculate the new point
+            delta_lat = distance * math.cos(angle)
+            delta_lon = distance * math.sin(angle)
+
+            new_lat = center_lat + delta_lat
+            new_lon = center_lon + delta_lon
+
+            points.append((new_lat, new_lon))
+
+        # Jarvis March algorithm to find the convex hull
+        hull = []
+
+        # Find the leftmost point
+        l = min(points, key=lambda p: p[0])
+        p = l
+        while True:
+            hull.append(p)
+            q = points[0]
+            for r in points:
+                if (q == p) or (City.orientation(p, q, r) == 2):
+                    q = r
+            p = q
+            if p == l:
+                break
+
+        return hull
+
+    @staticmethod
+    def orientation(p, q, r):
+        """
+        To find the orientation of the ordered triplet (p, q, r).
+        The function returns:
+        0 -> p, q and r are collinear
+        1 -> Clockwise
+        2 -> Counterclockwise
+        """
+        val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+        if val == 0:
+            return 0
+        elif val > 0:
+            return 1
+        else:
+            return 2
+
     def new_inhabitants(self, n: int):
         """
         A function which creates n new inhabitants with parameters define by probabilities.
@@ -119,6 +187,27 @@ class City:
         Return:
 
         """
+        pass
+
+    def plot_city(self):
+        """
+        Plot the city boundary using the coordinates in coordinates_area.
+        """
+        if not self.coordinates_area:
+            raise ValueError("No coordinates available to plot.")
+
+        # Extract latitude and longitude
+        lats, lons = zip(*self.coordinates_area)
+
+        # Plot the boundary
+        plt.figure(figsize=(50, 50))
+        plt.plot(lons + (lons[0],), lats + (lats[0],), marker='o')
+        plt.fill(lons + (lons[0],), lats + (lats[0],), alpha=0.2)
+        plt.title(f'City Boundary (City ID: {self.id})')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
+        plt.grid(True)
+        plt.show()
 
     def __str__(self):
         return f'{self.id} {self.population} {self.area} {self.gdp}'
@@ -127,58 +216,24 @@ class City:
 # Example usage
 if __name__ == "__main__":
 
-
-
-    def calculate_area(coords):
-        """
-        Calculate the area of a polygon given its coordinates using the Shoelace formula.
-
-        Args:
-            coords (list of tuples): List of (latitude, longitude) tuples.
-
-        Returns:
-            float: The area of the polygon in square kilometers.
-        """
-        n = len(coords)
-        if n < 3:
-            raise ValueError("A polygon must have at least 3 vertices.")
-
-        distances = []
-        for i in range(n):
-            x = geodesic(coords[i], (coords[i][0], 0)).meters
-            y = geodesic(coords[i], (0, coords[i][1])).meters
-            distances.append((x, y))
-
-        area = 0
-        for i in range(n - 1):
-            x_i, y_i = distances[i]
-            x_ip1, y_ip1 = distances[i + 1]
-            area += x_i * y_ip1 - y_i * x_ip1
-
-        x_n, y_n = distances[-1]
-        x_1, y_1 = distances[0]
-        area += x_n * y_1 - y_n * x_1
-
-        area_km2 = abs(area) / 2 / 1e6  # Convert to square kilometers
-        return area_km2
-
-
     # Example coordinates in degrees decimal
-    coordinates = [
-        (48.8566, 2.3522),
-        (48.8566, 2.3622),
-        (48.8466, 2.3622),
-        (48.8466, 2.3522)
+    coordinates1 = [
+        (45.75194444, 4.83305556),
+        (45.76166667, 4.83388889),
+        (45.76138889, 4.84777778),
+        (45.75250000, 4.84750000)
     ]
-    area = calculate_area(coordinates)
-    print(f"Area in square kilometers: {area}")
 
-    """
-    def generate_coordinates_for_building(n):
-        pass
+    plougastel = City(1, 0, [], 0)
+    plougastel.coordinates_area = plougastel.generate_city_boundary_coordinates(17,
+                                                                                center_lat=45.75,
+                                                                                center_lon=4.83,
+                                                                                radius=0.05,
+                                                                                perturbation=0.001)
+    print(plougastel.coordinates_area)
+    plougastel.area = plougastel.compute_area()
+    print(plougastel.area)
 
-
-    plougastel = City(1, 0, 177, 0)
     plougastel.new_inhabitants(10000)
     plougastel.gdp = sum(hab.income * 12 / 4 for hab in plougastel.inhabitants_list)
 
@@ -197,7 +252,9 @@ if __name__ == "__main__":
         start_date = start_date.replace(year=next_year, month=next_month, day=1)
 
     print(plougastel.inhabitants_list[:10])
-"""
+    print(plougastel)
+    plougastel.plot_city()
+
 """
 Note for later:
     - Addition of a list with the coordinates of the city's boundaries'

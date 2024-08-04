@@ -128,20 +128,27 @@ Or simply:
 \[ \text{DD} = d + \left( \frac{\text{min}}{60} \right) + \left( \frac{\text{sec}}{3600} \right) \]
 
 
-Calculate for test
-Convertion : https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees
+### Calculate for test
+**Convertion** : https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees
 A : (45°45'07''N 4°49'59''E) --> (45.75194444, 4.83305556)
 B : (45°45'42''N 4°50'02''E) --> (45.76166667, 4.83388889)
 C : (45°45'41''N 4°50'52''E) --> (45.76138889, 4.84777778)
 D : (45°45'09''N 4°50'51''E) --> (45.75250000, 4.84750000)
 
-Distance : https://www.lexilogos.com/calcul_distances.htm
+**Distance** : https://www.lexilogos.com/calcul_distances.htm
 AB = 1.083 km
 BC = 1.078 km
 CD = 0.989 km
 DA = 1.122 km
 
+**Area** :  https://geographiclib.sourceforge.io/cgi-bin/Planimeter?type=polygon&rhumb=geodesic&radius=6378137&flattening=1%2F298.257223563&input=45.75194444+4.83305556%0D%0A45.76166667+4.83388889%0D%0A45.76138889+4.84777778%0D%0A45.75250000+4.84750000%0D%0A&option=Submit
+45.75194444 4.83305556
+45.76166667 4.83388889
+45.76138889 4.84777778
+45.75250000 4.84750000
 
+Perimeter (m)      = 4277.267497
+area (m^2)         = -1139310.0
 
 
 

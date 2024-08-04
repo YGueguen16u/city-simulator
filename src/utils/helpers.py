@@ -54,7 +54,7 @@ def haversine_distance(coord1, coord2):
     distance = R * c
     return distance
 
-
+"""
 # Test coordinates
 A = (45.75194444, 4.83305556)
 B = (45.76166667, 4.83388889)
@@ -77,7 +77,7 @@ print(f"AB: {AB}, BC: {BC}, CD: {CD}, DA: {DA}")
 print(f"ABg :{ABg}, BCg :{BCg}, CDg :{CDg}, DAg :{DAg} ")
 print(f"differences : AB : {abs(AB-ABg)}, BC : {abs(BC-BCg)}, CD : {abs(CD-CD)}, DA : {abs(DA-DA)}")
 
-"""
+
 AB: 1.084207288824753, BC: 1.0790770397423044, CD: 0.9897418807246884, DA: 1.123669093021847
 ABg :1.0825357569768936, BCg :1.0809328722294185, CDg :0.9882059817610646, DAg :1.1255928863879379 
 differences : AB : 0.0016715318478592867, BC : 0.001855832487114073, CD : 0.0, DA : 0.0

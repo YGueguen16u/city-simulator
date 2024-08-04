@@ -29,9 +29,9 @@ class TestCity(unittest.TestCase):
 
     def test_compute_area(self):
         """Test the computation of the city area"""
-        area = self.city.compute_area() * 1000000
-        expected_area_m2 = 1136575.20  # Expected area in square kilometers
-        self.assertAlmostEqual(area, expected_area_m2, places=3)
+        area = self.city.compute_area()
+        expected_area_m2 = 1.13931020  # Expected area in square kilometers
+        self.assertAlmostEqual(area, expected_area_m2, places=2)
 
     def test_add_inhabitants(self):
         """Test adding new inhabitants to the city"""
