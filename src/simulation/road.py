@@ -1,7 +1,7 @@
 # src/simulation/city.py
-import datetime
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+import datetime
 
 
 class Road:
@@ -11,8 +11,8 @@ class Road:
     Attributes:
         id (int): The unique identifier of the road.
         name (str): The name of the road.
-        source (int): The id of the starting node.
-        target (int): The id of the ending node.
+        source (tuple): The coordinates of the starting node (latitude, longitude).
+        target (tuple): The coordinates of the ending node (latitude, longitude).
         length (float): The length of the road.
         maxspeed (int): The maximum speed allowed on the road.
         oneway (bool): Indicates if the road is one-way.
@@ -72,24 +72,23 @@ class Road:
         ET.SubElement(graph, "data", key="d2").text = "epsg:4326"
         ET.SubElement(graph, "data", key="d3").text = "True"
 
-        node_ids = set()
-        for road in roads:
-            if road.source not in node_ids:
-                node = ET.SubElement(graph, "node", id=str(road.source))
-                ET.SubElement(node, "data", key="d4").text = "0.0"  # Placeholder, replace with actual coordinates
-                ET.SubElement(node, "data", key="d5").text = "0.0"  # Placeholder, replace with actual coordinates
-                ET.SubElement(node, "data", key="d6").text = "residential"  # Placeholder, replace with actual type
-                ET.SubElement(node, "data", key="d7").text = "1"  # Placeholder, replace with actual count
-                node_ids.add(road.source)
-            if road.target not in node_ids:
-                node = ET.SubElement(graph, "node", id=str(road.target))
-                ET.SubElement(node, "data", key="d4").text = "0.0"  # Placeholder, replace with actual coordinates
-                ET.SubElement(node, "data", key="d5").text = "0.0"  # Placeholder, replace with actual coordinates
-                ET.SubElement(node, "data", key="d6").text = "residential"  # Placeholder, replace with actual type
-                ET.SubElement(node, "data", key="d7").text = "1"  # Placeholder, replace with actual count
-                node_ids.add(road.target)
+        node_id_map = {}
+        node_counter = 1
 
-            edge = ET.SubElement(graph, "edge", source=str(road.source), target=str(road.target))
+        def add_node(coord):
+            nonlocal node_counter
+            if coord not in node_id_map:
+                node_id_map[coord] = node_counter
+                node = ET.SubElement(graph, "node", id=str(node_counter))
+                ET.SubElement(node, "data", key="d4").text = str(coord[1])  # Longitude
+                ET.SubElement(node, "data", key="d5").text = str(coord[0])  # Latitude
+                node_counter += 1
+            return node_id_map[coord]
+
+        for road in roads:
+            source_id = add_node(road.source)
+            target_id = add_node(road.target)
+            edge = ET.SubElement(graph, "edge", source=str(source_id), target=str(target_id))
             ET.SubElement(edge, "data", key="d8").text = str(road.id)
             ET.SubElement(edge, "data", key="d9").text = road.name
             ET.SubElement(edge, "data", key="d10").text = "residential"  # Placeholder, replace with actual type

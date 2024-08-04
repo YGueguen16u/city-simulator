@@ -9,6 +9,18 @@ from src.simulation.road import Road
 from shapely.geometry import Point, Polygon
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
+import osmnx as ox
+
+
+def load_and_visualize():
+    # Path to GraphML file
+    filepath = "city_roads.graphml"
+
+    # Load the graph from GraphML file
+    graph = ox.load_graphml(filepath)
+
+    # Visualize the graph
+    ox.plot_graph(graph)
 
 
 class City:
@@ -188,11 +200,29 @@ class City:
 
     def add_road(self, road):
         """
-        Add a new road to the city.
+        Add a new road to the city if it is within the city boundaries.
         Args:
             road (Road): An instance of the Road class.
         """
-        self.road_list.append(road)
+        if self.is_road_within_boundaries(road):
+            self.road_list.append(road)
+        else:
+            print(f"Road {road.name} is outside the city boundaries and will not be added.")
+
+    def is_road_within_boundaries(self, road):
+        """
+        Check if the road's source and target points are within the city boundaries.
+
+        Args:
+            road (Road): An instance of the Road class.
+
+        Returns:
+            bool: True if the road is within the city boundaries, False otherwise.
+        """
+        polygon = Polygon(self.coordinates_area)
+        source_point = Point(road.source)
+        target_point = Point(road.target)
+        return polygon.contains(source_point) and polygon.contains(target_point)
 
     def generate_graphml(self, filename):
         """
@@ -266,9 +296,22 @@ if __name__ == "__main__":
         next_year = start_date.year + (start_date.month // 12)
         start_date = start_date.replace(year=next_year, month=next_month, day=1)
 
+        # Adding roads
+    road1 = Road(1, "Random Street 1", (45.752, 4.834), (45.753, 4.835), 119.067, 70, False,
+                 "LINESTRING (4.834 45.752, 4.835 45.753)")
+    road2 = Road(2, "Random Street 2", (45.760, 4.830), (45.761, 4.831), 107.096, 70, False,
+                 "LINESTRING (4.830 45.760, 4.831 45.761)")
+
+    plougastel.add_road(road1)
+    plougastel.add_road(road2)
+
+    # Generate GraphML file
+    plougastel.generate_graphml("city_roads.graphml")
+
     print(plougastel.inhabitants_list[:10])
     print(plougastel)
     plougastel.plot_city()
+    load_and_visualize()
 
 """
 Note for later:
