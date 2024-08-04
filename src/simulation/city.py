@@ -4,8 +4,9 @@ import math
 import random
 from datetime import timedelta
 from src.simulation.person import Person
+from src.simulation.road import Road
 # from src.utils.helpers import haversine_distance  # Import the haversine_distance function
-# from shapely.geometry import Polygon
+from shapely.geometry import Point, Polygon
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 
@@ -21,7 +22,7 @@ class City:
         gdp (float): The gdp of the city.
         inhabitants_list (list): A list of the id of the inhabitants of the city.
         building_list (list): A list of buildings in the city.
-
+        road_list (list): A list of roads in the city.
     """
 
     def __init__(self, id, population, coordinates_area, gdp):
@@ -40,14 +41,12 @@ class City:
         self.area = 0
         self.inhabitants_list = []
         self.building_list = []
+        self.road_list = []
 
     def compute_area(self):
         """
         Compute the area of the city based on the given coordinates.
-
         Args:
-            coordinates_area (list of tuples): A list of tuples where each tuple contains the latitude and longitude in degrees decimal (DD).
-
         Returns:
             float: The computed area in square kilometers.
         """
@@ -187,6 +186,23 @@ class City:
         """
         pass
 
+    def add_road(self, road):
+        """
+        Add a new road to the city.
+        Args:
+            road (Road): An instance of the Road class.
+        """
+        self.road_list.append(road)
+
+    def generate_graphml(self, filename):
+        """
+        Generate a GraphML file with the current roads in the city.
+
+        Args:
+            filename (str): The name of the file to write the GraphML data.
+        """
+        Road.generate_graphml(self.road_list, filename)
+
     def plot_city(self):
         """
         Plot the city boundary using the coordinates in coordinates_area.
@@ -223,11 +239,11 @@ if __name__ == "__main__":
     ]
 
     plougastel = City(1, 0, [], 0)
-    plougastel.coordinates_area = plougastel.generate_city_boundary_coordinates2(2057,
-                                                                                 center_lat=45.75,
-                                                                                 center_lon=4.83,
-                                                                                 radius=0.01,
-                                                                                 perturbation=0.00999999)
+    plougastel.coordinates_area = plougastel.generate_city_boundary_coordinates(45,
+                                                                                center_lat=45.75,
+                                                                                center_lon=4.83,
+                                                                                radius=0.11,
+                                                                                perturbation=0.1999999)
 
     print(plougastel.coordinates_area)
     plougastel.area = plougastel.compute_area()
@@ -259,5 +275,5 @@ Note for later:
     - Addition of a list with the coordinates of the city's boundaries'
     - For now, we are handling coordinates in DD (decimal degrees) format, but we will incorporate a possible 
     switch to DMS (Degrees, Minutes, Seconds) format
-    
+    - For now, it's a plane area, elevation = 0
 """
