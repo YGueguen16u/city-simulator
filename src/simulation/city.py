@@ -10,7 +10,6 @@ from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 
 
-
 class City:
     """
     Class representing a city in the urban simulation.
@@ -79,7 +78,7 @@ class City:
         return self.area / 1e6  # Convert to square kilometers
 
     @staticmethod
-    def generate_city_boundary_coordinates(n, center_lat=45.75, center_lon=4.83, radius=0.01, perturbation=0.001):
+    def generate_city_boundary_coordinates(n, center_lat=45.75, center_lon=4.83, radius=0.01, perturbation=0.002):
         """
         Generates n coordinates around a center point to form a convex polygon representing the boundary of a city
         using the Jarvis March algorithm.
@@ -96,12 +95,11 @@ class City:
         """
         points = []
 
-        for _ in range(n):
-            # Generate random angle and distance
-            angle = random.uniform(0, 2 * math.pi)
+        angle_increment = 2 * math.pi / n
+        for i in range(n):
+            angle = i * angle_increment
             distance = radius + random.uniform(-perturbation, perturbation)
 
-            # Calculate the new point
             delta_lat = distance * math.cos(angle)
             delta_lon = distance * math.sin(angle)
 
@@ -225,11 +223,12 @@ if __name__ == "__main__":
     ]
 
     plougastel = City(1, 0, [], 0)
-    plougastel.coordinates_area = plougastel.generate_city_boundary_coordinates(17,
-                                                                                center_lat=45.75,
-                                                                                center_lon=4.83,
-                                                                                radius=0.05,
-                                                                                perturbation=0.001)
+    plougastel.coordinates_area = plougastel.generate_city_boundary_coordinates2(2057,
+                                                                                 center_lat=45.75,
+                                                                                 center_lon=4.83,
+                                                                                 radius=0.01,
+                                                                                 perturbation=0.00999999)
+
     print(plougastel.coordinates_area)
     plougastel.area = plougastel.compute_area()
     print(plougastel.area)
