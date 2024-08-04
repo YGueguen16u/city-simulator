@@ -1,3 +1,8 @@
+# Scenario 
+
+   You are an administrative representative of a dictatorship with the technological means to scrutinize all economic
+activities of its citizens. In this scenario, ...
+
 
 **plan**
 - social class impede certain spends
@@ -56,8 +61,9 @@
 
 Proba (avg and std) of people to go to each artisan retailer
   --> avg spend (with std) depend on jobs
-  --> How many times per year/ month/ week/ day
-  --> Which interval of time (avg std ex : every 3 weeks with std of 2 days)
+  --> For now --> an avg per person/family per month
+    --> How many times per year/ month/ week/ day
+    --> Which interval of time (avg std ex : every 3 weeks with std of 2 days)
   --> Take into account the spend of children depending on their parent's job
   --> take into account day off of people and artisan retailer 
   --> people go to the nearest artisan retailer
@@ -73,7 +79,11 @@ Proba (avg and std) of people to go to each artisan retailer
 --> Big Companies : 
   --> Safran (Factory) : 1500, gdp/person employee : € 250,000 ==> € 375 M
       - Engineering :
-        - Director of Engineering : 1, salary : € 120,000
+        - Director of Engineering : 1, salary : € 130,000
+        - Department Manager : 3, salary € 95,000 std 15,000
+        - Engineer Rank 5
+        - Intern : 20, salary € 1,000 per month std 400
+        - Apprentice : 20, salary € 16,000 std 4,000
     --> Presta : 500, gdp/person employee : € 120,000 ==> € 60 M
     
   --> Orange (Telecom shop) : 10, gdp/person employee : € 310,000 ==> € 3.1 M
