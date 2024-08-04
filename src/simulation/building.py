@@ -143,7 +143,7 @@ class WorkingBuilding(Building):
         super().__init__(id, coordinates_boundaries, coordinates_location, num_floors, floor_height)
         self.num_offices = num_offices
 
-
+"""
 # Example usage:
 residential_building = ResidentialBuilding(
     id=1,
@@ -174,6 +174,7 @@ working_building = WorkingBuilding(
 print("Residential Building Geographic Coordinates:", residential_building.convert_boundaries_to_geographic_coordinates())
 print("House Geographic Coordinates:", house.convert_boundaries_to_geographic_coordinates())
 print("Working Building Geographic Coordinates:", working_building.convert_boundaries_to_geographic_coordinates())
+"""
 
 """
 Note for later:
